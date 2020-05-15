@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
@@ -52,43 +53,49 @@ public class computergame extends AppCompatActivity {
     }
     public void update() {
         Log.i(TAG, "update: Update called");
-        if(i>rounds){
-            Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibe.vibrate(80);
-            if(score1>score2){
-                Toast.makeText(this, player1+ " Wins by "+score1+ ":"+score2,Toast.LENGTH_LONG).show();
-            }else if(score1==score2){
-                Toast.makeText(this, "It's a draw. Score: "+score1+" each.",Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(this, player2+ " Wins by "+score2+ ":"+score1,Toast.LENGTH_LONG).show();
-            }
-            super.finish();}
-        TextView v;
-        v = findViewById(R.id.current_round);
-        v.setText("Round: "+i);
-
+        if (i > rounds) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(score1>score2){
+                        Toast.makeText(getApplicationContext(), player1+ " Wins by "+score1+ ":"+score2,Toast.LENGTH_LONG).show();
+                    }else if(score1==score2){
+                        Toast.makeText(getApplicationContext(), "It's a draw. Score: "+score1+" each.",Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), player2+ " Wins by "+score2+ ":"+score1,Toast.LENGTH_LONG).show();
+                    }
+                    Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(80);
+                    finish();
+                }
+            },1000);
+        } else {
+            TextView v;
+            v = findViewById(R.id.current_round);
+            v.setText("Round: " + i);
+        }
     }
 
 
-    public void onclickrock(View view) {
+    public void onclickrock(View view) throws InterruptedException {
         Log.i(TAG, "onclickrock: Rock clicked");
         choice1 = "rock";
         analyse(choice1, choice2);
     }
 
-    public void onclickpaper(View view) {
+    public void onclickpaper(View view) throws InterruptedException {
         Log.i(TAG, "onclickpaper: Paper clicked");
         choice1 = "paper";
         analyse(choice1, choice2);
     }
 
-    public void onclickscissor(View view) {
+    public void onclickscissor(View view) throws InterruptedException {
         Log.i(TAG, "onclickscissor: Scissor clicked");
         choice1 = "scissor";
         analyse(choice1, choice2);
     }
 
-    public void analyse(String choice1, String choice2) {
+    public void analyse(String choice1, String choice2) throws InterruptedException {
         Log.i(TAG, "analyse: Ananlyse called");
             TextView textView;
             LinearLayout layout=findViewById(R.id.layout);
@@ -98,6 +105,7 @@ public class computergame extends AppCompatActivity {
                 if (choice2 == "rock") {
                     score1++;
                     score2++;
+                    layout.setBackgroundColor(Color.BLUE);
                 } else if (choice2 == "paper") {
                     score2++;
                     layout.setBackgroundColor(Color.RED);
@@ -114,6 +122,7 @@ public class computergame extends AppCompatActivity {
                 } else if (choice2 == "paper") {
                     score1++;
                     score2++;
+                    layout.setBackgroundColor(Color.BLUE);
                 } else {score2++;
                     layout.setBackgroundColor(Color.RED);
                 }
@@ -129,6 +138,7 @@ public class computergame extends AppCompatActivity {
                 } else {
                     score1++;
                     score2++;
+                    layout.setBackgroundColor(Color.BLUE);
                 }
             }
             Toast.makeText(this, player1+"'s choice: "+choice1+"\n"+player2+"'s choice: "+choice2, Toast.LENGTH_LONG).show();
