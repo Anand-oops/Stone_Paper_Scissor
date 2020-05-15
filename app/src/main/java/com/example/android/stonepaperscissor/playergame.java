@@ -3,10 +3,10 @@ package com.example.android.stonepaperscissor;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,25 +46,34 @@ public class playergame extends AppCompatActivity {
         v = findViewById(R.id.score2);
         v.setText("Score: " + score2);
 
-        update();
+        try {
+            update();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void update() {
+    public void update() throws InterruptedException {
         Log.i(TAG, "update: Update called");
-        if(i>rounds){
-            Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibe.vibrate(80);
-            if(score1>score2){
-                Toast.makeText(this, player1+ " Wins by "+score1+ ":"+score2,Toast.LENGTH_LONG).show();
-            }else if(score1==score2){
-                Toast.makeText(this, "It's a draw. Score: "+score1+" each.",Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(this, player2+ " Wins by "+score2+ ":"+score1,Toast.LENGTH_LONG).show();
-            }
-            super.finish();}
+        if (i > rounds) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (score1 > score2) {
+                        Toast.makeText(getApplicationContext(), player1 + " Wins by " + score1 + ":" + score2, Toast.LENGTH_LONG).show();
+                    } else if (score1 == score2) {
+                        Toast.makeText(getApplicationContext(), "It's a draw. Score: " + score1 + " each.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), player2 + " Wins by " + score2 + ":" + score1, Toast.LENGTH_LONG).show();
+                    }Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(80);
+                    finish();
+                }
+            },1000);
+        } else {
             TextView v;
             v = findViewById(R.id.current_round);
-            v.setText("Round: "+i);
+            v.setText("Round: " + i);
 
             v = findViewById(R.id.current_player);
             if ((j % 2 == 0)) {
@@ -74,9 +83,9 @@ public class playergame extends AppCompatActivity {
             }
 
         }
+    }
 
-
-    public void onclickrock(View view) {
+    public void onclickrock(View view) throws InterruptedException {
         Log.i(TAG, "onclickrock: Rock clicked");
             if (j % 2 == 0) {
                 choice1 = "rock";
@@ -88,7 +97,7 @@ public class playergame extends AppCompatActivity {
             analyse(choice1, choice2);
         }
 
-    public void onclickpaper(View view) {
+    public void onclickpaper(View view) throws InterruptedException {
         Log.i(TAG, "onclickpaper: Paper clicked");
         if (j % 2 == 0) {
             choice1 = "paper";
@@ -100,7 +109,7 @@ public class playergame extends AppCompatActivity {
         analyse(choice1, choice2);
     }
 
-    public void onclickscissor(View view) {
+    public void onclickscissor(View view) throws InterruptedException {
         Log.i(TAG, "onclickscissor: Scissor clicked");
         if (j % 2 == 0) {
             choice1 = "scissor";
@@ -112,7 +121,7 @@ public class playergame extends AppCompatActivity {
         analyse(choice1, choice2);
     }
 
-    public void analyse(String choice1, String choice2) {
+    public void analyse(String choice1, String choice2) throws InterruptedException {
         Log.i(TAG, "analyse: Ananlyse called");
             if (j % 2 == 0) {
                 TextView textView;
